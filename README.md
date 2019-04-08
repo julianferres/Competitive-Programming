@@ -2,9 +2,8 @@
 
 Soluciones y material a problemas en CSES y Project Euler
 
-## CSES
+## [Code Submission Evaluation System]((https://cses.fi/problemset/list/)
 ### Usuario: [julianferres](https://cses.fi/user/3367/)
-Soluciones a problemas en [Code Submission Evaluation System](https://cses.fi/problemset/list/)
 
-## Project Euler
+## [Project Euler](https://projecteuler.net/)
 ### Usuario: julianferres
