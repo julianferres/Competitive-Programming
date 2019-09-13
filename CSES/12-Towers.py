@@ -1,21 +1,20 @@
 from bisect import bisect_right
-import heapq
+
+def find_gt(a, x):
+	'Find leftmost value greater than x'
+	i = bisect_right(a, x)
+	return i if i != len(a) else -1
 
 n = int(input())
 k = ([int(x) for x in input().split()])
-topes = heapq.heapify([k[0]])
-print(topes)
-ans = 1
-for val in k:
-	print(topes)
-	idx = bisect_right(list(topes),val)
-	if(idx==len(list(topes))):
-		heapq.heappush(topes,val)
-		ans+=1
+
+towers = []
+
+for element in k:
+	index = find_gt(towers,element)
+	if(index==-1):
+		towers.append(element)
 	else:
-		topes[idx] = val
-print(ans)
+		towers[index] = element
 
-
-
-    
+print(len(towers))
