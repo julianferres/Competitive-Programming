@@ -7,4 +7,5 @@ while(n>1):
     if(not n%2):n//=2
     else: n = 3*n+1
 d.append(1)
-print(*d)
+for i in d:print(i)
+
