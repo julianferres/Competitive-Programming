@@ -1,11 +1,13 @@
-import sys; sys.setrecursionlimit(10**6)
-import timeit
-start = timeit.default_timer()
-def dfs(ady , s):
-	v[s] = True
-	for u in ady[s]:
-		if not v[u]:
-			dfs(ady,u)
+from collections import deque
+def bfs(ady, s, vis):
+	q = deque([])
+	q.append(s); vis[s] = True;
+	while q:
+		v = q.popleft()
+		for u in ady[v]:
+			if not vis[u]:
+				vis[u] = True
+				q.append(u)
 
 n,m = map(int,input().split())
 a = [input() for _ in range(n)]
@@ -38,8 +40,6 @@ ans = 0
 for s in v:
 	if not v[s]:
 		ans+=1
-		dfs(ady,s)
+		bfs(ady,s,v)
 
 print(ans)
-end = timeit.default_timer()
-print(end-start)
