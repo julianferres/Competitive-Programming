@@ -17,13 +17,7 @@ Matrix ones(int n){
 Matrix operator*(Matrix &a, Matrix &b){
 	int n=a.sz, m = b[0].sz, z = a[0].sz;
 	Matrix r(n,vector<ld>(m));
-	forn(i,n){
-		forn(j,m){
-			forn(k,z){
-				if(abs(i-k)<=1 && abs(k-j)<=1) r[i][j]+= a[i][k]*b[k][j];
-			}
-		}
-	} 
+	forn(i,n) forn(j,m)	forn(k,z) r[i][j]+= a[i][k]*b[k][j];
 	return r;
 }
 Matrix be(Matrix b, ll e){
@@ -40,7 +34,8 @@ int main()
 	Matrix tr(64,vector<ld>(64));
 	forn(i,64){ 
 		//Lleno matriz de transicion
-		// tr[i][j], aporte de j hacia i
+		// tr[i][j], aporte de j hacia i 
+		//(por ejemplo tr[0][8]=1/3,tr[0][1]=1/3)
 		int ady = 0;
 		if(i>=8) ady++;
 		if(i%8!=0) ady++;
@@ -57,9 +52,9 @@ int main()
 	forn(i,64){
 		ld pCasFree = 1.0;
 		forn(r,64) pCasFree*=(1.0-ans[i][r]);
-		//Ningun robot tiene que estatr en i;
+		//Ningun robot tiene que estar en i;
 		ECasFree+=pCasFree;
 	}
-	cout << ECasFree << endl;
+	cout << fixed << setprecision(6)<< ECasFree << endl;
 	return 0;
 }
