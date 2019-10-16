@@ -16,12 +16,12 @@ int main()
   
   int coins[n]; 
   forn(i,n) cin >> coins[i];
-
+  sort(coins,coins+n);
   int dp[x+5]; forn(i,x+1) dp[i]=0; dp[0] = 1;
   forn(i,x+1){
   	forn(j,n){
   		if(i+coins[j]<x+1){
-        dp[i+coins[j]] += dp[i];
+        dp[i+coins[j]]+= dp[i];
   		  dp[i+coins[j]]%=MOD;
       }
   	}
