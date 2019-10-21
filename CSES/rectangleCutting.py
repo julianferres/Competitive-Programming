@@ -14,8 +14,8 @@ def rec(a,b):
 	if dp[a][b] is not None:
 		return dp[a][b]
 	if(a<1):
-		dp[a][b] = in
-		return inf
+		dp[a][b] = inf
+		return inf	
 	if(a==1):
 		dp[a][b] = b-1
 		return dp[a][b]
