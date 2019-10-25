@@ -1,9 +1,12 @@
 # Competitive Programming
 
-Soluciones y material a problemas en CSES y Project Euler
+Submits de problemas a diferentes jueces y material para CP
 
 ## [Code Submission Evaluation System](https://cses.fi/problemset/list/)
 ### Usuario: [julianferres](https://cses.fi/user/3367/)
 
 ## [Project Euler](https://projecteuler.net/)
+### Usuario: julianferres
+
+## [UVa]
 ### Usuario: julianferres
