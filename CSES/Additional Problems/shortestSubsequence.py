@@ -1,5 +1,5 @@
 n = input()
-
+ 
 d = {x:False for x in ['A','C','G','T']}
 ans = ""
 last_added = False
