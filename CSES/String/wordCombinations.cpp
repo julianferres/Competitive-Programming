@@ -48,18 +48,15 @@ int main(){
     string text; cin >> text;
     int nn = text.size();
     ll n; cin >> n;
-    vector<string> words(n);
-    forn(i,n) cin >> words[i];
     vector<int> len(n);
-    forn(i,n) len[i]=words[i].size();
-    vi occurences[nn];
-
     vii hashPat;
-    forn(i,n){
-        struct Hash hashi= Hash(words[i]);
-        hashPat.pb(mp(hashi.get(0,words[i].size()),i));
-    }
-
+    forn(i,n){ 
+        string s; cin >> s;
+        len[i]=s.size();
+        struct Hash hashi= Hash(s);
+        hashPat.pb(mp(hashi.get(0,len[i]),i));
+    }   
+    vi occurences[nn];
     sort(hashPat.begin(), hashPat.end());
     struct Hash hashText = Hash(text);
     forn(i,nn){
