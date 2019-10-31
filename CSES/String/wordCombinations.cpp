@@ -12,35 +12,89 @@ typedef vector<pair<ll,ll>> vii;
 #define mp make_pair
 #define sz size()
 #define DBG(x) cerr << #x << " = " << (x) << endl
-#define RAYA cerr << "===============================" << endl
-#define MODD 1000000000+7
+#define MOD 1000000000+7
+#define esta(x,c) ((c).find(x) != (c).end())
 
-struct Hash {
-    int P=1777771,MOD[2],PI[2];
-    vector<int> h[2],pi[2];
-    Hash(string& s){
-        MOD[0]=999727999;MOD[1]=1070777777;
-        PI[0]=325255434;PI[1]=10018302;
-        fore(k,0,2)h[k].resize(s.size()+1),pi[k].resize(s.size()+1);
-        fore(k,0,2){
-            h[k][0]=0;pi[k][0]=1;
-            ll p=1;
-            fore(i,1,s.size()+1){
-                h[k][i]=(h[k][i-1]+p*s[i-1])%MOD[k];
-                pi[k][i]=(1LL*pi[k][i-1]*PI[k])%MOD[k];
-                p=(p*P)%MOD[k];
+namespace AhoCorasick
+{
+    typedef char Character;
+    struct TrieNode
+    {
+        TrieNode() : wordIndex(-1) {}
+        
+        map<Character, TrieNode> children;
+        int wordIndex;
+        TrieNode *nextDictNode;
+        TrieNode *nextTrieNode;
+    };
+    
+    struct Trie
+    {
+        Trie() {}
+        Trie(const vector<string> &v)
+        {
+            forn(i,v.size())
+            {
+                TrieNode *current = &root;
+                forn(j, v[i].size())
+                    current = &current->children[v[i][j]];
+                current->wordIndex = i;
+            }
+            struct Event
+            {
+                Event(TrieNode *newCurrent, TrieNode *newParent, char newC) : current(newCurrent), parent(newParent), c(newC) {}
+                TrieNode *current, *parent;
+                Character c;
+            };
+            root.nextDictNode = root.nextTrieNode = NULL;
+            queue<Event> q;
+            q.push(Event(&root, NULL, 0));
+            while (!q.empty())
+            {
+                TrieNode *current = q.front().current;
+                TrieNode *parent  = q.front().parent;
+                char c = q.front().c;
+                q.pop();
+                if (parent)
+                {
+                    current->nextTrieNode = automataTransition(parent->nextTrieNode, c);
+                    current->nextDictNode = ( (current->nextTrieNode->wordIndex >= 0) ? 
+                                                    current->nextTrieNode : 
+                                                    current->nextTrieNode->nextDictNode
+                                            );
+                }
+                for (auto &it : current->children)
+                    q.push(Event(&it.second, current, it.first));
             }
         }
-    }
-    ll get(int s, int e){
-        ll h0=(h[0][e]-h[0][s]+MOD[0])%MOD[0];
-        h0=(1LL*h0*pi[0][s])%MOD[0];
-        ll h1=(h[1][e]-h[1][s]+MOD[1])%MOD[1];
-        h1=(1LL*h1*pi[1][s])%MOD[1];
-        return (h0<<32)|h1;
-    }
+        
+        TrieNode *automataTransition(TrieNode *currentState, Character x)
+        {
+            while (currentState && !esta(x, currentState->children)) currentState = currentState->nextTrieNode;
+            return currentState ? &currentState->children[x] : &root;
+        }
+        
+        vii reportAllMatches(const string &s)
+        {
+            vii pairsOfReports;
+            TrieNode *currentState = &root;
+            if (currentState->wordIndex >= 0) pairsOfReports.pb(mp(0,currentState->wordIndex)); // Por si esta la palabra vacia... (medio hijoeputa)
+            forn(i,s.size())
+            {
+                TrieNode* matchingState = currentState = automataTransition(currentState, s[i]);
+                if (matchingState->wordIndex < 0) matchingState = matchingState->nextDictNode;
+                while (matchingState)
+                {
+                    pairsOfReports.pb(mp(i+1,matchingState->wordIndex));
+                    matchingState = matchingState->nextDictNode;
+                }
+            }
+            return pairsOfReports; 
+        }
+        
+        TrieNode root;
+    };
 };
-
 
 
 int main(){ 
@@ -48,25 +102,22 @@ int main(){
     string text; cin >> text;
     int nn = text.size();
     ll n; cin >> n;
-    vector<int> len(n);
-    vii hashPat;
+    vector<string> words;
+    vector<int> len;
+
     forn(i,n){ 
         string s; cin >> s;
-        len[i]=s.size();
-        struct Hash hashi= Hash(s);
-        hashPat.pb(mp(hashi.get(0,len[i]),i));
-    }   
-    vi occurences[nn];
-    sort(hashPat.begin(), hashPat.end());
-    struct Hash hashText = Hash(text);
-    forn(i,nn){
-        fore(j,i+1,nn+1){
-            ll hashij = hashText.get(i,j);
+        len.pb(s.size());
+        words.pb(s);
+    }
 
-            auto it = lower_bound(hashPat.begin(), hashPat.end(),mp(hashij,0LL));
-            if((*it).F==hashij)
-                occurences[i].pb((*it).S);
-        }
+    AhoCorasick::Trie t(words);
+    vii pairsOfReports = t.reportAllMatches(text);
+    
+    vi occurences[nn];
+    for(auto p: pairsOfReports){
+        ll x = p.F, y =p.S;
+        occurences[x-len[y]].pb(y);
     }
 
     ll dp[nn];
@@ -75,15 +126,10 @@ int main(){
         for(auto id: occurences[i]){
             if(len[id]+i==nn) dp[i]+=1;
             if(len[id]+i<nn) dp[i]+= dp[i+len[id]];
-            dp[i]%=MODD;
+            dp[i]%=MOD;
         }
-        dp[i]%=MODD;
+        dp[i]%=MOD;
     }
-    /*forn(i,nn){
-        cout << dp[i] << " ";
-    }
-    cout << endl;
-    */
     cout << dp[0] << endl;
     return 0;
 }
