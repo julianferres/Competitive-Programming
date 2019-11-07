@@ -2,9 +2,6 @@
 using namespace std;
 typedef long long ll;
 typedef vector<ll> vi;
-typedef vector<bool> vb;
-typedef tuple<ll,ll,ll> iii;
-typedef vector<iii> viii;
 #define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define fore(i, a, b) for(ll i = (a); i < (ll) (b); i++)
 #define forn(i, n) fore(i, 0, n)
