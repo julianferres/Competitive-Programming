@@ -1,12 +1,21 @@
 # Competitive Programming
 
-Submits de problemas a diferentes jueces y material para CP
+Submissions on diferent Online Judges
 
-## [Code Submission Evaluation System](https://cses.fi/problemset/list/)
+
+<details>
+  <summary>My accounts</summary>
+
+## [Code Submission Evaluation System (CSES)](https://cses.fi/problemset/list/)
+
 ### Usuario: [julianferres](https://cses.fi/user/3367/)
 
 ## [Project Euler](https://projecteuler.net/)
+
 ### Usuario: julianferres
 
 ## [UVa](https://uva.onlinejudge.org)
+
 ### Usuario: julianferres
+
+</details>
