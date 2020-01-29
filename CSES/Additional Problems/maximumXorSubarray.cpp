@@ -23,46 +23,45 @@ typedef pair<ll, ll> ii;
 #define esta(x, c) ((c).find(x) != (c).end())
 #define RAYA cerr << "===============================" << endl
 #define MOD 1000000007
-#define MAXN 200005
+#define MAXN 100005
 #define INF 1e18
+
+ll max_xor(ll arr[], ll n)
+{
+    ll mask = 0, maxx = 0;
+    unordered_set<ll> se;
+    for (ll i = 30; i >= 0; --i)
+    {
+        mask |= (1 << i);
+        ll newMaxx = maxx | (1 << i);
+
+        forn(i, n)
+            se.insert(arr[i] & mask);
+        for (ll prefix : se)
+        {
+            if (esta(newMaxx ^ prefix, se))
+            {
+                maxx = newMaxx;
+                break;
+            }
+        }
+        se.clear();
+    }
+    return maxx;
+}
 
 int main()
 {
     FIN;
-    multiset<ll> s;
-    int n, q;
-    cin >> n >> q;
-    ll a[MAXN];
+    ll n;
+    cin >> n;
+    ll a[n + 5];
+    forn(i, n) cin >> a[i];
+    ll cum[n + 5];
+    cum[0] = 0;
     forn(i, n)
-    {
-        cin >> a[i];
-        s.insert(a[i]);
-    }
-    forn(i, q)
-    {
-        char type;
-        cin >> type;
-        if (type == '!')
-        {
-            ll k, x;
-            cin >> k >> x;
-            ll value = a[k];
-            auto it = s.find(value);
-            s.erase(it);
-            s.insert(x);
-            a[k] = x;
-        }
-        else
-        {
-            ll a, b;
-            cin >> a >> b;
-            a--;
-            auto d = distance(s.upper_bound(a-1),s.upper_bound(b));
-            cout << d << endl;
-            
+        cum[i + 1] = cum[i] ^ a[i];
 
-        }
-    }
-
+    cout << max_xor(cum, n + 1) << endl;
     return 0;
 }
