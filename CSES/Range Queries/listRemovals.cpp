@@ -33,33 +33,22 @@ int main()
 {
     FIN;
     indexed_set s;
-    int n, q;
-    cin >> n >> q;
+    int n;
+    cin >> n;
     ll a[MAXN];
     forn(i, n)
     {
         cin >> a[i];
-        s.insert(mp(a[i], i));
+        s.insert(mp(i, a[i]));
     }
-    forn(i, q)
+    forn(i, n)
     {
-        char type;
-        cin >> type;
-        if (type == '!')
-        {
-            ll k, x;
-            cin >> k >> x;
-            k--;
-            s.erase(s.find_by_order(s.order_of_key(mp(a[k], k))));
-            s.insert(mp(x, k));
-            a[k] = x;
-        }
-        else
-        {
-            ll a, b;
-            cin >> a >> b;
-            cout << s.order_of_key(mp(b, n)) - s.order_of_key(mp(a - 1, n)) << endl;
-        }
+        int pos;
+        cin >> pos;
+        pos--;
+        ii x = *s.find_by_order(pos);
+        cout << x.second << " ";
+        s.erase(s.find_by_order(pos));
     }
 
     return 0;

@@ -25,41 +25,69 @@ typedef pair<ll, ll> ii;
 #define MOD 1000000007
 #define MAXN 200005
 #define INF 1e18
-#include <ext/pb_ds/assoc_container.hpp>
-using namespace __gnu_pbds;
-typedef tree<ii, null_type, less_equal<ii>, rb_tree_tag, tree_order_statistics_node_update> indexed_set;
+
+int n, l;
+vector<int> adj[MAXN];
+vector<vector<int>> up;
+vector<int> d(MAXN, 0);
+
+void dfs(int v, int p)
+{
+    up[v][0] = p;
+    for (int i = 1; i <= l; ++i)
+        up[v][i] = up[up[v][i - 1]][i - 1];
+
+    for (int u : adj[v])
+    {
+        if (u != p)
+        {
+            d[u] = d[v] + 1;
+            dfs(u, v);
+        }
+    }
+}
+
+void preprocess(int root)
+{
+    l = ceil(log2(n));
+    up.assign(n, vector<int>(l + 1));
+    dfs(root, root);
+}
 
 int main()
 {
     FIN;
-    indexed_set s;
-    int n, q;
+    int q;
     cin >> n >> q;
-    ll a[MAXN];
-    forn(i, n)
+    forr(i, 1, n)
     {
-        cin >> a[i];
-        s.insert(mp(a[i], i));
+        ll par;
+        cin >> par;
+        par--;
+        adj[i].pb(par);
+        adj[par].pb(i);
     }
+    preprocess(0);
+
     forn(i, q)
     {
-        char type;
-        cin >> type;
-        if (type == '!')
+        int x, k;
+        cin >> x >> k;
+        x--;
+        if (k > d[x])
         {
-            ll k, x;
-            cin >> k >> x;
-            k--;
-            s.erase(s.find_by_order(s.order_of_key(mp(a[k], k))));
-            s.insert(mp(x, k));
-            a[k] = x;
+            cout << -1 << endl;
+            continue;
         }
-        else
+        int digit = 0;
+        while (k > 0)
         {
-            ll a, b;
-            cin >> a >> b;
-            cout << s.order_of_key(mp(b, n)) - s.order_of_key(mp(a - 1, n)) << endl;
+            if (k & 1)
+                x = up[x][digit];
+            k >>= 1;
+            digit++;
         }
+        cout << x + 1 << endl;
     }
 
     return 0;
