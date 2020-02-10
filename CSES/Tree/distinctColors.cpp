@@ -14,18 +14,18 @@ typedef pair<ll, ll> ii;
 #define forr(i, a, b) for (int i = (a); i < (int)(b); i++)
 #define forn(i, n) forr(i, 0, n)
 #define pb push_back
-#define mp make_pair
-#define all(c) (c).begin(), (c).end()
 #define DBG(x) cerr << #x << " = " << (x) << endl
 #define DBGV(v, n)                  \
     forn(i, n) cout << v[i] << " "; \
     cout << endl
 #define esta(x, c) ((c).find(x) != (c).end())
-#define RAYA cerr << "===============================" << endl
 #define MAXN 200005
 
-ll x[MAXN], cnt[MAXN];
+int n;
+vi g[MAXN], s, le(MAXN, -1), ri(MAXN, -1);
 map<ll, ll> m;
+bool vis[MAXN];
+ll x[MAXN], cnt[MAXN];
 
 ll block_size;
 
@@ -38,7 +38,6 @@ struct Query
                make_pair(other.l / block_size, other.r);
     }
 };
-
 vi mo_s_algorithm(vector<Query> queries)
 {
     vi answers(queries.size());
@@ -51,28 +50,48 @@ vi mo_s_algorithm(vector<Query> queries)
     for (Query q : queries)
     {
         while (cur_r < q.r)
-            if (++cnt[x[cur_r++]] == 1)
+            if (++cnt[s[cur_r++]] == 1)
                 ans++;
         while (cur_r > q.r)
-            if (--cnt[x[--cur_r]] == 0)
+            if (--cnt[s[--cur_r]] == 0)
                 ans--;
         while (cur_l < q.l)
-            if (--cnt[x[cur_l++]] == 0)
+            if (--cnt[s[cur_l++]] == 0)
                 ans--;
         while (cur_l > q.l)
-            if (++cnt[x[--cur_l]] == 1)
+            if (++cnt[s[--cur_l]] == 1)
                 ans++;
         answers[q.idx] = ans;
     }
     return answers;
 }
+void dfs(ll v)
+{
+    s.pb(v);
+    vis[v] = true;
+    for (auto u : g[v])
+    {
+        if (vis[u])
+            continue;
+        dfs(u);
+    }
+    s.pb(v);
+}
+void init_lr()
+{
+    forn(i, s.size())
+    {
+        if (le[s[i]] == -1)
+            le[s[i]] = i;
+        else
+            ri[s[i]] = i;
+    }
+}
 
 int main()
 {
     FIN;
-    ll n, q;
-    cin >> n >> q;
-    vector<Query> queries(q);
+    cin >> n;
     block_size = (ll)sqrt(n + .0) + 1;
 
     forn(i, n)
@@ -80,19 +99,33 @@ int main()
         int y;
         cin >> y;
         if (esta(y, m))
-            x[i] = m[y]; //Compresion
+            x[i] = m[y]; //Compresion de coordenadas
         else
-            x[i] = m.size(), m[y] = x[i]; //Le asigno el siguiente color comprimido
-    }
-    forn(i, q)
-    {
-        ll a, b;
-        cin >> a >> b;
-        queries[i].l = a - 1, queries[i].r = b, queries[i].idx = i;
+            x[i] = m.size(), m[y] = x[i];
     }
 
+    forn(i, n - 1)
+    {
+        int a, b;
+        cin >> a >> b;
+        a--, b--;
+        g[a].pb(b);
+        g[b].pb(a);
+    }
+    dfs(0);
+    init_lr();
+    forn(i, 2 * n) s[i] = x[s[i]];
+    vector<Query> queries(n);
+    forn(i, n)
+    {
+        queries[i].l = le[i];
+        queries[i].r = ri[i] + 1;
+        queries[i].idx = i;
+    }
     vi answers = mo_s_algorithm(queries);
 
-    forn(i, q) cout << answers[i] << endl;
+    forn(i, n) cout << answers[i] << " ";
+    cout << endl;
+
     return 0;
 }
