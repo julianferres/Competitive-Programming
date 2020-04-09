@@ -1,0 +1,1 @@
+[{"input":"axyb\nabyxb\n","output":"axb\n"},{"input":"aa\nxayaz\n","output":"aa\n"},{"input":"a\nz\n","output":"\n"},{"input":"abracadabra\navadakedavra\n","output":"aaadara\n"}]

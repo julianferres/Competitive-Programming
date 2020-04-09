@@ -19,11 +19,10 @@ typedef vector<ll> vi;
 	cout << endl
 #define RAYA cerr << "===============================" << endl
 #define MAXN 200005
-#define MAXN2 400005
 
 int n, q, a, b;
-ll t[2 * MAXN2], initvalue[MAXN];
-vi g[MAXN], s, le(MAXN, -1), ri(MAXN, -1);
+ll t[2 * MAXN], initvalue[MAXN];
+vi g[MAXN], id, idToPos(MAXN), s(MAXN);
 bool vis[MAXN];
 
 void build()
@@ -48,28 +47,17 @@ ll query(ll l, ll r)
 	}
 	return res;
 }
-
 void dfs(ll v)
 {
-	s.pb(v);
+	id.pb(v);
 	vis[v] = true;
+	s[v] = 1;
 	for (auto u : g[v])
 	{
 		if (vis[u])
 			continue;
 		dfs(u);
-	}
-	s.pb(v);
-}
-
-void init_lr()
-{
-	forn(i, s.size())
-	{
-		if (le[s[i]] == -1)
-			le[s[i]] = i;
-		else
-			ri[s[i]] = i;
+		s[v] += s[u];
 	}
 }
 
@@ -87,11 +75,9 @@ int main()
 		g[b].pb(a);
 	}
 	dfs(0);
-	init_lr();
-	n *= 2;
-	forn(i, n) t[i + n] = initvalue[s[i]];
+	forn(i, n) idToPos[id[i]] = i;
+	forn(i, n) t[i + n] = initvalue[id[i]];
 	build();
-	init_lr();
 
 	forn(i, q)
 	{
@@ -101,15 +87,13 @@ int main()
 		{
 			cin >> ss >> x;
 			ss--;
-			modify(le[ss], x);
-			modify(ri[ss], x);
+			modify(idToPos[ss], x);
 		}
 		else
 		{
 			cin >> ss;
 			ss--;
-			ll ans = query(le[ss], ri[ss] + 1) / 2;
-			cout << ans << endl;
+			cout << query(idToPos[ss], idToPos[ss] + s[ss]) << endl;
 		}
 	}
 

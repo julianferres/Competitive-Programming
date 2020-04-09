@@ -1,6 +1,5 @@
 /******************************************
-*    AUTHOR:         JULIAN FERRES        *
-*    INSTITUITION:   FIUBA                *
+*    AUTHOR:         julianferres         *
 ******************************************/
 #include <bits/stdc++.h>
 using namespace std;
@@ -18,60 +17,66 @@ typedef vector<ii> vii;
 #define mp make_pair
 #define all(c) (c).begin(), (c).end()
 #define DBG(x) cerr << #x << " = " << (x) << endl
-#define DBGV(v, n)                \
-  forn(i, n) cout << v[i] << " "; \
-  cout << endl
 #define esta(x, c) ((c).find(x) != (c).end())
 #define RAYA cerr << "===============================" << endl
+const int INF = 2000000000;
 #define MOD 1000000007
-#define MAXN 100005
+#define MAXN 2505
 
-const ll minusINF = -1LL << 40;
-const ll INF = 1LL << 40;
-int n;
-vii g[MAXN];
+int n, m;
+vii g[MAXN], gt[MAXN];
+vector<bool> used, assignment;
+vi order, comp;
 
-void dijkstra(vii g[], ll s, ll d[])
+void dfs1(int v)
 {
-  forn(i, n) d[i] = INF;
-  d[s] = 0;
-  priority_queue<ii, vii, greater<ii>> q;
-  q.push({0, s});
-  while (!q.empty())
+  used[v] = true;
+  for (auto u : g[v])
   {
-    ll c, u, v, w;
-    tie(c, u) = q.top();
-    q.pop();
-    if (d[u] < c)
-      continue;
-    for (ii x : g[u])
-    {
-      tie(v, w) = x;
-      if (d[v] > c + w && c + w > minusINF)
-      {
-        d[v] = c + w, q.push({c + w, v});
-      }
-    }
+    if (!used[u.first])
+      dfs1(u.first);
+  }
+  order.push_back(v);
+}
+void dfs2(int v, int cl)
+{
+  comp[v] = cl;
+  for (auto u : gt[v])
+  {
+    if (comp[u.first] == -1)
+      dfs2(u.first, cl);
+  }
+}
+bool korasaju()
+{
+  used.assign(n, false);
+  forn(i, n) if (!used[i]) dfs1(i);
+
+  comp.assign(n, -1);
+  for (int i = 0, j = 0; i < n; ++i)
+  {
+    int v = order[n - i - 1];
+    if (comp[v] == -1)
+      dfs2(v, j++);
   }
 }
 
 int main()
 {
   FIN;
-  int m;
   cin >> n >> m;
   forn(i, m)
   {
     ll a, b, c;
     cin >> a >> b >> c;
-    g[a - 1].pb(mp(b - 1, -c));
+    a--, b--;
+    c *= -1;
+    g[a].pb({b, c});
+    gt[b].pb({a, c});
   }
-  ll d[MAXN];
-  dijkstra(g, 0, d);
-  cout << d[n - 1] << endl;
-  /*if(neg_cycle)
-        cout << -1 << endl;
-    else
-        cout << -d[n-1] << endl;*/
+
+  korasaju();
+  forn(i, n) cout << comp[i] << " \n"[i == n - 1];
+
   return 0;
 }
