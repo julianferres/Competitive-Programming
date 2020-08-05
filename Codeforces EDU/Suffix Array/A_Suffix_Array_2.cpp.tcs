@@ -1,0 +1,1 @@
+[{"input":"ababba\n","output":"6 5 0 2 4 1 3 \n"},{"input":"aaaa\n","output":"4 3 2 1 0 \n"},{"input":"ppppplppp\n","output":"9 5 8 4 7 3 6 2 1 0 \n"},{"input":"nn\n","output":"2 1 0 \n"}]
