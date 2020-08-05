@@ -4,3 +4,4 @@ in
 out
 test_input*
 *.tcs
+.vscode
