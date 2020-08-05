@@ -1,0 +1,1 @@
+[{"input":"bababb\nzabacabba\n","output":"aba\n"},{"input":"qrdq\nrqqqrdqrqd\n","output":"qrdq\n"},{"input":"hhhhhh\nhhhhhhh\n","output":"hhhhhh\n"},{"input":"opopo\nppppopopo\n","output":"opopo\n"}]
