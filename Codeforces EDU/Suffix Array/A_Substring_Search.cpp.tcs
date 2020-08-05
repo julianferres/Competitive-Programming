@@ -1,1 +1,0 @@
-[{"input":"ababba\n3\nba\nbaba\nabba\n","output":"Yes\nNo\nYes\n"},{"input":"codeforces\n3\ncode\nforces\nmath\n","output":"Yes\nYes\nNo\n"},{"input":"a\n2\na\na\n","output":"Yes\nYes\n"}]

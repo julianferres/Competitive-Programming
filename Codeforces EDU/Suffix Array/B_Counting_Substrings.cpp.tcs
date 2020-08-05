@@ -1,1 +1,0 @@
-[{"input":"ababba\n3\nba\nbaba\nabba\n","output":"2\n0\n1\n"},{"input":"itmouniversity\n3\nit\nmore\nuniversity\n","output":"2\n0\n1\n"},{"input":"aaa\n2\na\naa\n","output":"3\n2\n"}]
