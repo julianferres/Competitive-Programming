@@ -26,12 +26,16 @@ typedef long long tipo;
 struct lazy {
   struct node {
     tipo ans, l, r, val=0; //Poner el neutro del update
+    tipo pref, suff, sum;
     bool upd; tipo INF = (tipo)(1e18+7);
-    node base(node aux) {aux.ans=0; return aux;} //Poner el neutro de la query
-    void set_node(tipo x, tipo pos) {ans = x, l = r = pos;};
+    node base(node aux) {aux.ans=-INF; return aux;} //Poner el neutro de la query
+    void set_node(tipo x, tipo pos) {ans = pref = suff = sum = x, l = r = pos;};
     void set_lazy(tipo x) {upd=true, val = x;} //Poner operacion de update
     void combine(node a, node b) {
-      ans = a.ans + b.ans; //Operacion de query
+      sum = a.sum + b.sum;
+      pref = max(a.pref, a.sum + b.pref);
+      suff = max(b.suff, b.sum + a.suff);
+      ans = max(max(a.ans, b.ans), a.suff + b.pref);
       l = min(a.l,b.l); r = max(a.r,b.r);
     }
   };
@@ -39,7 +43,11 @@ struct lazy {
   
   void push(tipo p) {
     if(t[p].upd == true) {
-      t[p].ans = t[p].val*(t[p].r-t[p].l+1); //Operacion update
+      t[p].sum = (t[p].r-t[p].l+1)*t[p].val;
+      if(t[p].val > 0)
+          t[p].ans = t[p].pref = t[p].suff = t[p].sum;
+      else
+        t[p].ans = t[p].pref = t[p].suff = 0;
       if(t[p].l < t[p].r) {
         t[2*p+1].val = t[p].val; t[2*p+2].val = t[p].val; //Operacion de update
         t[2*p+1].upd = true; t[2*p+2].upd = true;
@@ -91,6 +99,7 @@ int main() {
     forn(i, m){
         int l, r, value; cin >> l >> r >> value;
         st.modificar(l, r-1, value);
+        cout << st.query(0, n-1).ans << "\n";
     }
 
     
