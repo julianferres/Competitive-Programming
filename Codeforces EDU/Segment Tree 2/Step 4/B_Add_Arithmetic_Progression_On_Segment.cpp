@@ -142,7 +142,7 @@ int main()
   int n, m;
   cin >> n >> m;
   vi a(n);
-  forn(i, n) cin >> a[i];
+  // forn(i, n) cin >> a[i];
 
   lazy st;
   st.construir(a, n);
@@ -155,22 +155,22 @@ int main()
     { //Suma
       int l, r, value;
       cin >> l >> r >> value;
-      l--,r--;
-      st.modificar(l, r, value, 1);
+      // l--,r--;
+      st.modificar(l, --r, value, 2);
     }
     else if (type == 2)
     { //Assignment
       int l, r, value;
       cin >> l >> r >> value;
-      l--,r--;
-      st.modificar(l, r, value, 2);
+      // l--,r--;
+      st.modificar(l, --r, value, 1);
     }
     else
     {
       int l, r;
       cin >> l >> r;
-      l--,r--;
-      cout << st.query(l, r).ans << "\n";
+      // l--,r--;
+      cout << st.query(l, --r).ans << "\n";
     }
   }
 
