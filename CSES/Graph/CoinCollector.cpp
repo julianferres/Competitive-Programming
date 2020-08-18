@@ -52,9 +52,10 @@ const int MOD = 1e9+7; // 998244353
 const int MAXN  = 1e5+5;
 
 vector<vector<int>> g(MAXN), gr(MAXN);
-vector<bool> visto(MAXN,false);
-vector<int> order, component;
+vector<bool> visto(MAXN,false), seen;
+vector<int> order, component, topo;
 vector<vector<int>> scc;
+vector<vector<int>> adj;
 
 void DFS1 (int v) {
   visto[v] = true;
@@ -79,23 +80,24 @@ void find_scc(int n) {
 	}
 }
 
-void DFS3(int v, vector<vector<int>> adj, vector<bool> &seen, vector<int> &topo){
+void DFS3(int v){
     seen[v] = true;
     for(int u: adj[v])
         if(!seen[u])
-            DFS3(u, adj, seen, topo);
+            DFS3(u);
     topo.pb(v);
 }
 
-ll solve(vector<vector<int>> adj, vector<int> values, int n){
-    vector<int> topo; vector<bool> seen(n, false);
-    forn(i, n) if(!seen[i]) DFS3(i, adj, seen, topo);
+ll solve(vi values, int n){
+    seen.resize(n);
+    forn(i, n) if(!seen[i]) DFS3(i);
 
     vi dp(n);
     forn(i, n) dp[i] = values[i];
     //debug() << imie(topo);
+    reverse(all(topo));
 
-    forn(i, n){
+    for(int i: topo){
         for(int u: adj[i]){
             //debug() << imie(u) imie(i);
             dp[u] = max(dp[u], dp[i] + values[u]);
@@ -122,8 +124,8 @@ int main(){
 
     debug() <<  imie(scc);
 
-    vector<vector<int>> nuevo_grafo(scc.size());
-    vector<int> nuevo_values(scc.size());
+    adj.resize(scc.size());
+    vi nuevo_values(scc.size());
     
     vector<int> node_to_scc(n);
     forn(i, scc.size()){
@@ -136,10 +138,10 @@ int main(){
     forn(i, n)
         for(int j: g[i])
             if(node_to_scc[i] != node_to_scc[j])
-                nuevo_grafo[node_to_scc[i]].pb(node_to_scc[j]);
+                adj[node_to_scc[i]].pb(node_to_scc[j]);
     
     //debug() << imie(nuevo_grafo) imie(nuevo_values);
 
-   // cout << solve(nuevo_grafo, nuevo_values, scc.size()) << "\n";
+    cout << solve(nuevo_values, scc.size()) << "\n";
     return 0;
 }
