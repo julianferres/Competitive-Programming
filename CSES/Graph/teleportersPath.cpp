@@ -77,6 +77,11 @@ int main()
         return 0;
     }
     vi path = get_path(0);
+
+    if(path.size() != m+1){
+        cout << "IMPOSSIBLE\n";
+        return 0;
+    }
     forn(i, m + 1) cout << path[i] + 1 << " ";
     cout << endl;
 }
