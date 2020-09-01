@@ -1,11 +1,9 @@
-/*    AUTHOR: julianferres, jue 27 ago 2020 13:02:16 -03 */
+/*    AUTHOR: julianferres, jue 27 ago 2020 11:08:25 -03 */
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp> // Common file 
-#include <ext/pb_ds/tree_policy.hpp> 
-#include <functional> // for less 
-// DEBUGGER
-using namespace __gnu_pbds;
+#include <queue>
 using namespace std;
+
+// DEBUGGER
 #define sim template < class c
 #define ris return * this
 #define dor > debug & operator <<
@@ -51,27 +49,34 @@ const int INF = 1<<30; // const ll INF = 1LL<<60;
 const int MOD = 1e9+7; // 998244353
 const int MAXN  = 2e5+5;
 
-template <class T> using Tree = tree<T, null_type, less<T>, rb_tree_tag,tree_order_statistics_node_update>;
-
-Tree<int> tr;
-map<int, int> pos;
-
+vector<vector<int>> g;
+vector<int> dout;
 
 int main(){  
     FIN;
-    int n; cin >> n;
-    vi a(n); forn(i, n) cin >> a[i];
-    forn(i, n) { pos[a[i]] = i; tr.insert(i); }
-
-    int restantes = n;
-    ll ans = 0;
-    for(pair<int, int> kv: pos){
-        int act = tr.order_of_key(kv.second);
-        ans += min(act, restantes-1-act);
-        tr.erase(kv.second);
-        restantes--;
+    int n, m; cin >> n >> m;
+    g.resize(n); dout.resize(n);
+    forn(i, m){
+        int x, y; cin >> x >> y;
+        x--, y--;
+        dout[x]++;
+        g[y].pb(x);
     }
-    cout << ans << "\n";
+    vi topo;
 
+    ll seen = 0; priority_queue<int>q;
+    forn(i, n) if(!dout[i]) q.push(i);
+    while(q.size()) {
+        int v;
+        v = q.top(); q.pop();
+        topo.pb(v);
+        for(int u: g[v]){
+            dout[u]--;
+            if(!dout[u]) q.push(u);
+        }                        
+    }
+    reverse(all(topo));
+
+    forn(i, n) cout << topo[i]+1 << " \n"[i==n-1];
     return 0;
 }

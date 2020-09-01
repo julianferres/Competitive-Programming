@@ -1,11 +1,8 @@
-/*    AUTHOR: julianferres, jue 27 ago 2020 13:02:16 -03 */
+/*    AUTHOR: julianferres, vie 28 ago 2020 15:16:23 -03 */
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp> // Common file 
-#include <ext/pb_ds/tree_policy.hpp> 
-#include <functional> // for less 
-// DEBUGGER
-using namespace __gnu_pbds;
 using namespace std;
+
+// DEBUGGER
 #define sim template < class c
 #define ris return * this
 #define dor > debug & operator <<
@@ -51,27 +48,42 @@ const int INF = 1<<30; // const ll INF = 1LL<<60;
 const int MOD = 1e9+7; // 998244353
 const int MAXN  = 2e5+5;
 
-template <class T> using Tree = tree<T, null_type, less<T>, rb_tree_tag,tree_order_statistics_node_update>;
+int cnt[26];
+string ans;
 
-Tree<int> tr;
-map<int, int> pos;
-
+bool check() {
+    int total = 0, max_char = 0;
+    forn(i,26) {
+        max_char = (cnt[i] > cnt[max_char]) ? i : max_char;
+        total += cnt[i];
+    }
+    if (2*cnt[max_char]-1 == total && !(ans.size() && (ans.back()-'A') == max_char)) return true;
+    if (2*cnt[max_char] <= total) return true;
+    return false;
+}
 
 int main(){  
     FIN;
-    int n; cin >> n;
-    vi a(n); forn(i, n) cin >> a[i];
-    forn(i, n) { pos[a[i]] = i; tr.insert(i); }
 
-    int restantes = n;
-    ll ans = 0;
-    for(pair<int, int> kv: pos){
-        int act = tr.order_of_key(kv.second);
-        ans += min(act, restantes-1-act);
-        tr.erase(kv.second);
-        restantes--;
+    string s; cin >> s;
+    for(char c: s) cnt[c-'A']++;
+    if(!check()){
+        cout << "-1\n";
+        return 0;
+    }
+
+    while(ans.size() < s.size()){
+        forn(i, 26){
+            if(cnt[i]){
+                if(ans.size() && ans.back()-'A' == i) continue;
+                ans += char('A'+ i); cnt[i]--;
+                if(check()) break;
+                ans.pop_back(); cnt[i]++;
+            }
+        }
     }
     cout << ans << "\n";
+
 
     return 0;
 }

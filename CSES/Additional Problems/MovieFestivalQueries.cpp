@@ -1,8 +1,11 @@
-/*    AUTHOR: julianferres, jue 27 ago 2020 12:46:16 -03 */
+/*    AUTHOR: julianferres, jue 27 ago 2020 13:02:16 -03 */
 #include <bits/stdc++.h>
-using namespace std;
- 
+#include <ext/pb_ds/assoc_container.hpp> // Common file 
+#include <ext/pb_ds/tree_policy.hpp> 
+#include <functional> // for less 
 // DEBUGGER
+using namespace __gnu_pbds;
+using namespace std;
 #define sim template < class c
 #define ris return * this
 #define dor > debug & operator <<
@@ -32,7 +35,7 @@ sim dor(const c&) { ris; }
 };
 #define imie(...) " [" << #__VA_ARGS__ ": " << (__VA_ARGS__) << "] "
 //END DEBUGGER
- 
+
 typedef long long ll;
 typedef vector<ll> vi;
 typedef pair<ll,ll> ii;
@@ -47,32 +50,33 @@ typedef vector<ii> vii; typedef vector<bool> vb;
 const int INF = 1<<30; // const ll INF = 1LL<<60;
 const int MOD = 1e9+7; // 998244353
 const int MAXN  = 2e5+5;
- 
-int jump[MAXN][20];
- 
+
+#include <ext/pb_ds/assoc_container.hpp> // Common file 
+#include <ext/pb_ds/tree_policy.hpp> 
+#include <functional> // for less 
+using namespace __gnu_pbds;
+template <class T> using Tree = tree<T, null_type, less<T>, rb_tree_tag,tree_order_statistics_node_update>;
+
+Tree<int> tr;
+map<int, int> pos;
+
+
 int main(){  
     FIN;
-    int n, q; cin >> n >> q;
-    forn(i, MAXN) jump[i][0] = MAXN-1;
- 
-    forn(i, n){
-        int l, r; cin >> l >> r;
-        jump[l][0] = min(jump[l][0], r);
+    int n; cin >> n;
+    vi a(n); forn(i, n) cin >> a[i];
+    forn(i, n) { pos[a[i]] = i; tr.insert(i); }
+
+    int restantes = n;
+    ll ans = 0;
+    for(pair<int, int> kv: pos){
+        int act = tr.order_of_key(kv.second);
+        ans += min(act, restantes-1-act);
+        tr.erase(kv.second);
+        restantes--;
     }
-    for(int i = MAXN-1; i>=1; i--){
-        jump[i-1][0] = min(jump[i-1][0], jump[i][0]);
-    }
-    forr(j, 1, 20) forn(i, MAXN) jump[i][j] = jump[jump[i][j-1]][j-1];
-    forn(i, q){
-        int l, r; cin >> l >> r;
-        int ans = 0;
-        for(int j=19; j>=0; j--){
-            if(jump[l][j] <= r){
-                ans +=  1<<j;
-                l = jump[l][j];
-            }
-        }
-        cout << ans << "\n";
-    }
+    cout << ans << "\n";
+
     return 0;
 }
+

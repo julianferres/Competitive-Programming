@@ -1,11 +1,8 @@
-/*    AUTHOR: julianferres, jue 27 ago 2020 13:02:16 -03 */
+/*    AUTHOR: julianferres, vie 28 ago 2020 01:07:45 -03 */
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp> // Common file 
-#include <ext/pb_ds/tree_policy.hpp> 
-#include <functional> // for less 
-// DEBUGGER
-using namespace __gnu_pbds;
 using namespace std;
+
+// DEBUGGER
 #define sim template < class c
 #define ris return * this
 #define dor > debug & operator <<
@@ -51,26 +48,23 @@ const int INF = 1<<30; // const ll INF = 1LL<<60;
 const int MOD = 1e9+7; // 998244353
 const int MAXN  = 2e5+5;
 
-template <class T> using Tree = tree<T, null_type, less<T>, rb_tree_tag,tree_order_statistics_node_update>;
-
-Tree<int> tr;
-map<int, int> pos;
 
 
 int main(){  
     FIN;
-    int n; cin >> n;
-    vi a(n); forn(i, n) cin >> a[i];
-    forn(i, n) { pos[a[i]] = i; tr.insert(i); }
 
-    int restantes = n;
+    int n; cin >> n;
+    vi a(n), b(n);
+    forn(i, n) cin >> a[i];
+    forn(i, n) cin >> b[i];
+    forn(i, n) a[i] -= b[i];
+
+    vi cum(1, 0); forn(i, n-1) cum.pb(cum.back() + a[i]);
+    sort(all(cum));
+    ll mid = cum[cum.size()/2];
+
     ll ans = 0;
-    for(pair<int, int> kv: pos){
-        int act = tr.order_of_key(kv.second);
-        ans += min(act, restantes-1-act);
-        tr.erase(kv.second);
-        restantes--;
-    }
+    forn(i, n) ans += abs(mid-cum[i]);
     cout << ans << "\n";
 
     return 0;

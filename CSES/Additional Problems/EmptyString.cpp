@@ -1,11 +1,8 @@
-/*    AUTHOR: julianferres, jue 27 ago 2020 13:02:16 -03 */
+/*    AUTHOR: julianferres, jue 27 ago 2020 23:14:22 -03 */
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp> // Common file 
-#include <ext/pb_ds/tree_policy.hpp> 
-#include <functional> // for less 
-// DEBUGGER
-using namespace __gnu_pbds;
 using namespace std;
+
+// DEBUGGER
 #define sim template < class c
 #define ris return * this
 #define dor > debug & operator <<
@@ -49,29 +46,53 @@ typedef vector<ii> vii; typedef vector<bool> vb;
 #define esta(x,c) ((c).find(x) != (c).end())
 const int INF = 1<<30; // const ll INF = 1LL<<60;
 const int MOD = 1e9+7; // 998244353
-const int MAXN  = 2e5+5;
+const int MAXN  = 505;
 
-template <class T> using Tree = tree<T, null_type, less<T>, rb_tree_tag,tree_order_statistics_node_update>;
+vector<vi> memo(MAXN, vi(MAXN));
+string s;
+ll fact[MAXN], inv_fact[MAXN];
 
-Tree<int> tr;
-map<int, int> pos;
+ll binpow(ll a, ll b, ll m) {
+    a %= m;
+    ll res = 1;
+    while (b > 0) {
+        if (b & 1) res = res * a % m;
+        a = a * a % m, b >>= 1;
+    }
+    return res;
+}
+ll inv(ll a, ll m){ return binpow(a, m-2, m); }
 
+void init(){
+    fact[0] = inv_fact[0] = 1;
+    forr(i, 1, MAXN){ fact[i] = fact[i-1]*i%MOD; inv_fact[i] = inv(fact[i], MOD); }
+}
+
+ll ncr(int n, int k){
+    return fact[n] * inv_fact[k] % MOD * inv_fact[n-k] %MOD;
+}
+
+void solve(int l, int r){
+    if((l-r+1)&1) return;
+    for(int i=l+1; i<=r; i+=2){
+        if((i-l+1)&1) continue;
+        if(s[i] == s[l]) {
+            ll aux = memo[l+1][i-1] * memo[i+1][r] %MOD;
+            aux = aux*ncr((r-l+1)/2, (i-l+1)/2) %MOD;
+            memo[l][r] += aux;
+            memo[l][r] %= MOD;
+        }
+    }
+}
 
 int main(){  
     FIN;
-    int n; cin >> n;
-    vi a(n); forn(i, n) cin >> a[i];
-    forn(i, n) { pos[a[i]] = i; tr.insert(i); }
 
-    int restantes = n;
-    ll ans = 0;
-    for(pair<int, int> kv: pos){
-        int act = tr.order_of_key(kv.second);
-        ans += min(act, restantes-1-act);
-        tr.erase(kv.second);
-        restantes--;
-    }
-    cout << ans << "\n";
+    cin >> s;
+    init();
+    forr(i, 1, s.size()+1) memo[i][i-1] = 1;
+    for(int i=s.size()-1; i>=0; i--)forr(j, i, s.size()) solve(i, j);
+    cout << memo[0][s.size()-1] << endl;
 
     return 0;
 }
