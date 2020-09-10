@@ -21,20 +21,36 @@ int par[MAXN];
 int find(int x){return par[x]=par[x]==x?x:find(par[x]);}
 void join(int x, int y){par[find(x)]=find(y);}
 
+struct query {
+    int type, u, v;
+};
+
+vector<query> q;
+vector<bool> ans;
 
 int main(){  
     FIN;
-    int n, m; cin >> n >> m;
-    forn(i, n) par[i] = i;
+    int n, m, k; cin >> n >> m >> k;
     forn(i, m){
+        int a, b;
+        cin >> a >> b;
+    }
+    forn(i, n) par[i] = i;
+    forn(i, k){
         string type; cin >> type;
         int u, v; cin >> u >> v;
         u--, v--;
-        if(type == "union"){
-            join(u, v);
-        } else {
-            cout << ((find(u) == find(v)) ? "YES" : "NO") << "\n";
-        }
+        q.pb({type=="ask", u, v});
     }
+    reverse(all(q));
+    for(query act: q){
+        if(act.type) ans.pb(find(act.u) == find(act.v));
+        else
+           join(act.u, act.v); 
+    }
+    reverse(all(ans));
+    for(bool s: ans)
+        cout << (s ? "YES" : "NO") << "\n";
+
     return 0;
 }
