@@ -1,4 +1,4 @@
-/*    AUTHOR: julianferres, Sun 13 Sep 2020 05:02:49 PM -03 */
+/*    AUTHOR: julianferres, Sun 13 Sep 2020 08:59:31 PM -03 */
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -46,38 +46,47 @@ typedef vector<ii> vii; typedef vector<bool> vb;
 #define esta(x,c) ((c).find(x) != (c).end())
 const int INF = 1<<30; // const ll INF = 1LL<<60;
 const int MOD = 1e9+7; // 998244353
-const int MAXN  = 2e5+5;
+const int MAXN  = 3e5+5;
 
-int par[MAXN];
-int find(int x){return par[x]=par[x]==x?x:find(par[x]);}
-void join(int x, int y){par[find(x)]=find(y);}
+int par[MAXN], len[MAXN], sz[MAXN];
 
+pair<int, int> find(int x){
+    if(par[x] == x) return {par[x], 0};
+    pair<int, int> val = find(par[x]);
+    par[x] = val.first;
+    len[x] = (len[x] + val.second) % 2;
 
-int main() {
+    return {par[x], len[x]};
+}
+
+void join(int x, int y){
+    pair<int, int> valx = find(x);
+    pair<int, int> valy = find(y);
+    if(sz[valx.first] > sz[valy.first])
+        swap(valx, valy);
+    par[valx.first] = valy.first;
+    len[valx.first] = (1 + valx.second + valy.second) % 2;
+    sz[valy.first] += sz[valx.first];
+}
+
+int main(){  
     FIN;
-    int n, q; cin >> n >> q;
-    forn(i, n) par[i] = i;
-    set<int> s; forn(i, n) s.insert(i);
 
-    forn(i, q){
-        int tipo, x, y; cin >> tipo >> x >> y;
-        x--, y--;
+    int n, m; cin >> n >> m;
+    forn(i, n) par[i] = i, len[i] = 0, sz[i] = 1;
 
-        if(tipo == 1){
-            join(x, y);
+    bool pos = true;
+    forn(i, m){
+        int a, b; cin >> a >> b;
+        a--, b--;
+        join(a, b);
+        if(find(a).second == find(b).second){
+            cout << i+1 << "\n";
+            pos = false;
+            break;
         }
-        else if(tipo == 2){
-            int pos = x;
-            while(*s.lower_bound(pos) < y){
-                pos = *s.lower_bound(pos);
-                s.erase(pos);
-                join(pos, pos + 1);
-            }
-        }
-        else{
-            cout << (find(x) == find(y) ? "YES" : "NO") << "\n";
-        }
-
     }
+    if(pos) cout << "-1\n";
+
     return 0;
 }

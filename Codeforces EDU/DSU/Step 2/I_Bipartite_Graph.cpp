@@ -1,4 +1,4 @@
-/*    AUTHOR: julianferres, Thu 10 Sep 2020 01:41:28 AM -03 */
+/*    AUTHOR: julianferres, Sun 13 Sep 2020 10:43:59 PM -03 */
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -37,7 +37,7 @@ typedef long long ll;
 typedef vector<ll> vi;
 typedef pair<ll,ll> ii;
 typedef vector<ii> vii; typedef vector<bool> vb;
-#define FIN ios::sync_with_stdio(0);cout.tie(0)
+#define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define forr(i, a, b) for(int i = (a); i < (int) (b); i++)
 #define forn(i, n) forr(i, 0, n)
 #define pb push_back
@@ -48,26 +48,48 @@ const int INF = 1<<30; // const ll INF = 1LL<<60;
 const int MOD = 1e9+7; // 998244353
 const int MAXN  = 2e5+5;
 
-int par[MAXN];
-int find(int x){return par[x]=par[x]==x?x:find(par[x]);}
-void join(int x, int y){par[find(x)]=find(y);}
+int par[MAXN], len[MAXN], sz[MAXN];
 
-int main(){
+pair<int, int> find(int x){
+    if(par[x] == x) return {par[x], 0};
+    pair<int, int> val = find(par[x]);
+    par[x] = val.first;
+    len[x] = (len[x] + val.second) % 2;
+
+    return {par[x], len[x]};
+}
+
+void join(int x, int y){
+    pair<int, int> valx = find(x);
+    pair<int, int> valy = find(y);
+    if(sz[valx.first] > sz[valy.first])
+        swap(valx, valy);
+    par[valx.first] = valy.first;
+    len[valx.first] = (1 + valx.second + valy.second) % 2;
+    sz[valy.first] += sz[valx.first];
+}
+
+int main(){  
     FIN;
-    
+
     int n, m; cin >> n >> m;
+    forn(i, n) par[i] = i, len[i] = 0, sz[i] = 1;
+
+    int shift = 0;
     forn(i, m){
-        string type; cin >> type;
-        int x; cin >> x; x--;
-        if(type == "-"){
-            join(x, min(x+1, n-1));
+        int tipo, a, b; cin >> tipo >> a >> b;
+        a--, b--;
+        a = (a+shift) % n;
+        b = (b+shift) % n;
+        if(tipo == 0){
+            join(a, b);
         }
         else{
-            int ans = find(x+1);
-            cout << (ans=(x ? -1 : ans) << "\n";
+            bool algo = find(a).second == find(b).second;
+            cout << (algo ? "YES" : "NO") << "\n";
+            shift += algo;
         }
     }
 
     return 0;
 }
-
